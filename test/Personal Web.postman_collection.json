@@ -1,0 +1,163 @@
+{
+	"info": {
+		"name": "Personal Web",
+		"_postman_id": "08277d6d-b38f-a9c8-1bc6-6a9ab642ef36",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth_register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "johnny3",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123qweasd",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "wylswz3@icloud.com",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "firstname",
+							"value": "yunlu",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "lastname",
+							"value": "wen",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:9090/auth/register/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9090",
+					"path": [
+						"auth",
+						"register",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "auth_drop_user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:9090/auth/drop/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9090",
+					"path": [
+						"auth",
+						"drop",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "auth_login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "johnny2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123qweasd",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:9090/auth/login/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9090",
+					"path": [
+						"auth",
+						"login",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "auth_logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:9090/auth/logout/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9090",
+					"path": [
+						"auth",
+						"logout",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
