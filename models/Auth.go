@@ -50,19 +50,27 @@ type User struct {
 }
 // show columns from user
 
+type Group struct {
+
+
+}
+
+type UserProfile struct {
+
+
+}
+
 func (U User) Create(r *http.Request) (string, error) {
 	// Step1: parse form
-	// Step2: validate form by checking 
-	// Step3: hash the password using sha256 algorithm
+	// Step2: validate form
+	// Step3: hash the password
 	// Step4: Create the user instance and dump to database
-	// Step5: Return message and error
+	// Step5: Return message and error (if applicable)
 
 	r.ParseMultipartForm(32 << 20)
 	form := r.Form
-	//fmt.Println(form)
 
 	engine, _ := xorm.NewEngine("mysql", connect_str)
-	//fmt.Println(engine.Query("show tables;"))
 
 	username,password,email,firstname,lastname,err := Validate(form) 
 	if err != nil {
@@ -70,7 +78,6 @@ func (U User) Create(r *http.Request) (string, error) {
 	} else {
 		
 		pass_hashed := PassHash([]byte(password))
-		//fmt.Println(pass_hashed,username,password,email,firstname,lastname,err)
 		
 		
 		new_user := User{UserName:username,
