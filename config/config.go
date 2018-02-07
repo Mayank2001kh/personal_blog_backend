@@ -1,8 +1,6 @@
 package configs
 
-var HOST = "win"
-
-
+var HOST = "linux"
 
 var DBHOST string
 var DBPORT string
@@ -15,18 +13,18 @@ var COOKIENAME = "johnnysbackend"
 func init() {
 
 	if HOST == "win" {
-		 DBHOST = "localhost"
-		 DBPORT = "5432"
-		 DBUSER = "root"
-		 DBPASS = "admin"
-		 DBNAME = "golang_be"
+		DBHOST = "localhost"
+		DBPORT = "5432"
+		DBUSER = "root"
+		DBPASS = "admin"
+		DBNAME = "golang_be"
 
 	} else {
 
-		 DBHOST = "localhost"
-		 DBPORT = "3306"
-		 DBUSER = "root"
-		 DBPASS = "admin"
-		 DBNAME = "golang_be"
+		DBHOST = "localhost"
+		DBPORT = "3306"
+		DBUSER = "root"
+		DBPASS = "admin"
+		DBNAME = "golang_be"
 	}
 }
