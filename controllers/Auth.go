@@ -61,11 +61,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		newUser := new(models.User)
 		uid, err := newUser.Authenticate(r)
 		if err != nil {
-			response = models.BaseResponse{"error", "Authentication fail"}
+			response = models.BaseResponse{"error", fmt.Sprint(err)}
 		} else {
+
 			session, _ := store.Get(r, configs.COOKIENAME)
 			if session.Values["uid"] == uid {
-				response = models.BaseResponse{"error", "Do not log in repeatedly"}
+				response = models.BaseResponse{"success", "Log in repeatedly"}
 			}
 			session.Values["uid"] = uid
 			session.Save(r, w)

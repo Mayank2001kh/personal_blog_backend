@@ -18,6 +18,7 @@ import (
 var connect_str = fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8", configs.DBUSER, configs.DBPASS, configs.DBHOST, configs.DBPORT, configs.DBNAME)
 
 func PassHash(password []byte) string {
+
 	h := sha256.New()
 	h.Write(password)
 	pass_hashed := fmt.Sprintf("%x", h.Sum(nil))
@@ -150,9 +151,11 @@ func (U User) Authenticate(r *http.Request) (int64, error) {
 	engine, _ := xorm.NewEngine("mysql", connect_str)
 	r.ParseMultipartForm(32 << 20)
 	form := r.Form
+	fmt.Println(form)
 	username := form["username"]
 	password := form["password"]
 	if len(username)*len(password) <= 0 {
+		fmt.Println(len(username), len(password))
 		return 0, errors.New("Invalid form")
 	}
 
@@ -190,10 +193,14 @@ func (U User) FetchProfile(userId int64) (UserProfile, error) {
 }
 
 func (U User) SetProfile(r *http.Request, userid int64) (UserProfile, error) {
-	// Avatar , Intro
+	// Set avatar and intro of the profile
+	// Step1: Parse form and extract file
+	// Step2: Set profile photo by copying imgage and set the path
+	// Step3: Set intro
+	// Step4: Return the user profile
 	r.ParseMultipartForm(32 << 20)
 	form := r.Form
-	if len(form["avatar"]) <= 0 {
+	if len(form["intro"]) <= 0 {
 		return UserProfile{}, errors.New("Invalid form")
 	}
 
@@ -203,8 +210,8 @@ func (U User) SetProfile(r *http.Request, userid int64) (UserProfile, error) {
 	if err != nil {
 		return UserProfile{}, errors.New(fmt.Sprint(err))
 	}
-	avatar := "./media/avatars/user_" + fmt.Sprint(userid) + "_avatar_" + handler.Filename
-	f, err := os.OpenFile(avatar, os.O_RDWR|os.O_CREATE, 0666)
+	avatar := "/media/avatars/user_" + fmt.Sprint(userid) + "_avatar_" + handler.Filename
+	f, err := os.OpenFile("."+avatar, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		return UserProfile{}, errors.New(fmt.Sprint(err))
 
