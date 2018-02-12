@@ -200,19 +200,26 @@ func (U User) SetProfile(r *http.Request, userid int64) (UserProfile, error) {
 	// Step4: Return the user profile
 	r.ParseMultipartForm(32 << 20)
 	form := r.Form
+	intro := "None"
 	if len(form["intro"]) <= 0 {
-		return UserProfile{}, errors.New("Invalid form")
-	}
+		fmt.Println(form)
 
-	intro := form["intro"][0]
+	} else {
+		intro = form["intro"][0]
+	}
 
 	file, handler, err := r.FormFile("file")
+	fmt.Println(err)
+	fmt.Println(r.MultipartForm)
 	if err != nil {
+
 		return UserProfile{}, errors.New(fmt.Sprint(err))
 	}
+
 	avatar := "/media/avatars/user_" + fmt.Sprint(userid) + "_avatar_" + handler.Filename
 	f, err := os.OpenFile("."+avatar, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
+		fmt.Println(err)
 		return UserProfile{}, errors.New(fmt.Sprint(err))
 
 	}
