@@ -74,6 +74,28 @@ func (p Photo) Modify(r *http.Request) (Photo, string, error) {
 }
 
 func (p Photo) Delete(r *http.Request) (string, error) {
+	engine, _ := xorm.NewEngine("mysql", connect_str)
+	r.ParseMultipartForm(32 << 20)
+	form := r.Form
+	id_list := form["photoid"]
+	if len(id_list) <= 0 {
+		return "Invalid Form", errors.New("Invalid Form")
+	} else {
+		pid := id_list[0]
+		// photo id
+
+		engine.Id(pid).Get(&p)
+		// query photo from database
+		fmt.Println(p)
+		file_dir := p.File
+		os.Remove("." + file_dir)
+		_, err := engine.Id(pid).Delete(p)
+		if err != nil {
+			return "Database Error", err
+		} else {
+			return "Success", nil
+		}
+	}
 	//
 	return "None", nil
 }
