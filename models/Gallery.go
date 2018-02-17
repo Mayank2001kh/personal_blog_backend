@@ -21,6 +21,11 @@ type Photo struct {
 	Uploaded    time.Time `xorm:"created"`
 }
 
+type AbstractPhotoWrapper struct {
+	AbstractUser  User  `xorm:"extends"`
+	AbstractPhoto Photo `xorm:"extends"`
+}
+
 func (p Photo) Upload(r *http.Request, userid int64) (Photo, error) {
 
 	// media/gallery/userid/fileid_filename
@@ -101,6 +106,32 @@ func (p Photo) Delete(r *http.Request) (string, error) {
 }
 
 func (p Photo) Fetch(r *http.Request) ([]Photo, error) {
+	engine, _ := xorm.NewEngine("mysql", connect_str)
+	r.ParseMultipartForm(32 << 20)
+	form := r.Form
+	start_list := form["start"]
+	number_list := form["number"]
+	type_list := form["type"]
+	id_list := form["photoid"]
+	if len(start_list)*len(number_list)*len(type_list) <= 0 {
+		return []Photo{Photo{}}, errors.New("Invalid Form")
+	} else {
+		switch type_list[0] {
+		case "single":
+			engine.Id(id_list[0]).Get(&p)
+			return []Photo{p}, nil
+
+		case "multiple":
+
+		case "self":
+
+		default:
+			return []Photo{Photo{}}, errors.New("Invalid Form")
+
+		}
+
+	}
+
 	photoList := []Photo{}
 	return photoList, nil
 }
