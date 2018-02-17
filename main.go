@@ -33,6 +33,8 @@ func main() {
 	http.HandleFunc("/auth/login/", controllers.Login)
 	http.HandleFunc("/auth/logout/", controllers.Logout)
 	http.HandleFunc("/auth/profile/", controllers.Profile)
+	http.HandleFunc("/gallery/upload/", controllers.PhotoUpload)
+	http.HandleFunc("/gallery/drop/", controllers.PhotoDrop)
 	err := http.ListenAndServe(":9090", c.Handler(context.ClearHandler(http.DefaultServeMux))) // setting listening port
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
