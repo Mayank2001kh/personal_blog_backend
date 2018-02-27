@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -24,6 +25,10 @@ type Photo struct {
 type AbstractPhotoWrapper struct {
 	AbstractUser  User  `xorm:"extends"`
 	AbstractPhoto Photo `xorm:"extends"`
+}
+
+func (AbstractPhotoWrapper) TableName() string {
+	return "user"
 }
 
 func (p Photo) Upload(r *http.Request, userid int64) (Photo, error) {
@@ -105,7 +110,8 @@ func (p Photo) Delete(r *http.Request) (string, error) {
 	return "None", nil
 }
 
-func (p Photo) Fetch(r *http.Request) ([]Photo, error) {
+func (p Photo) Fetch(r *http.Request, userid int64) ([]Photo, error) {
+	// Fetch a photo (or photos) and return a slice of Photo along with error
 	engine, _ := xorm.NewEngine("mysql", connect_str)
 	r.ParseMultipartForm(32 << 20)
 	form := r.Form
@@ -113,20 +119,51 @@ func (p Photo) Fetch(r *http.Request) ([]Photo, error) {
 	number_list := form["number"]
 	type_list := form["type"]
 	id_list := form["photoid"]
+	photo_slice := []Photo{Photo{}}
 	if len(start_list)*len(number_list)*len(type_list) <= 0 {
-		return []Photo{Photo{}}, errors.New("Invalid Form")
+		return photo_slice, errors.New("Invalid Form")
 	} else {
 		switch type_list[0] {
 		case "single":
-			engine.Id(id_list[0]).Get(&p)
-			return []Photo{p}, nil
+			// need to provide photo id
+			_, err := engine.Id(id_list[0]).Get(&p)
+			if err != nil {
+				return []Photo{p}, err
+			} else {
+				return []Photo{p}, nil
+			}
 
 		case "multiple":
+			// need to provide start, number
+			wrapper := make([]Photo, 0)
+			start, _ := strconv.ParseInt(start_list[0], 10, 32)
+			number, _ := strconv.ParseInt(number_list[0], 10, 32)
+			fmt.Println(start, number)
+			err := engine.Limit(int(number), int(start)).Find(&wrapper)
+			if err != nil {
+				return wrapper, err
+			} else {
+				return wrapper, nil
+			}
 
 		case "self":
+			wrapper := make([]AbstractPhotoWrapper, 0)
+			start, _ := strconv.ParseInt(start_list[0], 10, 32)
+			number, _ := strconv.ParseInt(number_list[0], 10, 32)
+			err := engine.Join("INNER", "photo", fmt.Sprintf("photo.user_id = %v", userid)).Limit(int(number), int(start)).Find(&wrapper)
+			plist := make([]Photo, len(wrapper))
+			for i, _ := range plist {
+				plist[i] = wrapper[i].AbstractPhoto
+			}
+			if err != nil {
+				return plist, err
+			} else {
+				return plist, nil
+			}
+			// need to provide user id, start, number
 
 		default:
-			return []Photo{Photo{}}, errors.New("Invalid Form")
+			return []Photo{Photo{}}, errors.New("Type not supported")
 
 		}
 

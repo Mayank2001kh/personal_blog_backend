@@ -13,6 +13,11 @@ type PhotoResponse struct {
 	models.Photo
 }
 
+type PhotoListResponse struct {
+	models.BaseResponse
+	InnerData []models.Photo
+}
+
 func PhotoUpload(w http.ResponseWriter, r *http.Request) {
 	p := models.Photo{}
 	response := PhotoResponse{models.BaseResponse{Message: "Upload Success", Status: "success"}, p}
@@ -66,4 +71,31 @@ func PhotoDrop(w http.ResponseWriter, r *http.Request) {
 		enc.Encode(response)
 	}
 
+}
+
+func PhotoFetch(w http.ResponseWriter, r *http.Request) {
+	p := models.Photo{}
+	fmt.Println([]models.Photo{p})
+	enc := json.NewEncoder(w)
+	response := PhotoListResponse{models.BaseResponse{Message: "Fetch Success", Status: "success"}, []models.Photo{p}}
+	switch method := r.Method; method {
+	case "POST":
+		session, _ := store.Get(r, configs.COOKIENAME)
+		if session.Values["uid"] == nil {
+			response = PhotoListResponse{models.BaseResponse{Message: "You are not logged in", Status: "error"}, []models.Photo{p}}
+		} else {
+			plist, err := p.Fetch(r, session.Values["uid"].(int64))
+			if err != nil {
+				response = PhotoListResponse{models.BaseResponse{Message: fmt.Sprint(err), Status: "error"}, []models.Photo{p}}
+			} else {
+				response = PhotoListResponse{models.BaseResponse{Message: "Fetch Success", Status: "success"}, plist}
+			}
+		}
+
+		enc.Encode(response)
+
+	default:
+		response := models.BaseResponse{"error", fmt.Sprintf("Method: %v not supported", method)}
+		enc.Encode(response)
+	}
 }
