@@ -75,7 +75,7 @@ func PhotoDrop(w http.ResponseWriter, r *http.Request) {
 
 func PhotoFetch(w http.ResponseWriter, r *http.Request) {
 	p := models.Photo{}
-	fmt.Println([]models.Photo{p})
+
 	enc := json.NewEncoder(w)
 	response := PhotoListResponse{models.BaseResponse{Message: "Fetch Success", Status: "success"}, []models.Photo{p}}
 	switch method := r.Method; method {
@@ -89,6 +89,7 @@ func PhotoFetch(w http.ResponseWriter, r *http.Request) {
 				response = PhotoListResponse{models.BaseResponse{Message: fmt.Sprint(err), Status: "error"}, []models.Photo{p}}
 			} else {
 				response = PhotoListResponse{models.BaseResponse{Message: "Fetch Success", Status: "success"}, plist}
+				fmt.Println(plist)
 			}
 		}
 

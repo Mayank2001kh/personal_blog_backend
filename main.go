@@ -36,6 +36,7 @@ func main() {
 	http.HandleFunc("/gallery/upload/", controllers.PhotoUpload)
 	http.HandleFunc("/gallery/drop/", controllers.PhotoDrop)
 	http.HandleFunc("/gallery/fetch/", controllers.PhotoFetch)
+	http.HandleFunc("/dummy/", controllers.DummyAPI)
 	err := http.ListenAndServe(":9090", c.Handler(context.ClearHandler(http.DefaultServeMux))) // setting listening port
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

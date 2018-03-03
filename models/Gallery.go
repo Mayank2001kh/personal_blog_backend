@@ -138,7 +138,7 @@ func (p Photo) Fetch(r *http.Request, userid int64) ([]Photo, error) {
 			wrapper := make([]Photo, 0)
 			start, _ := strconv.ParseInt(start_list[0], 10, 32)
 			number, _ := strconv.ParseInt(number_list[0], 10, 32)
-			fmt.Println(start, number)
+
 			err := engine.Limit(int(number), int(start)).Find(&wrapper)
 			if err != nil {
 				return wrapper, err
